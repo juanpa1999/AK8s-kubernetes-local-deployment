@@ -1,3 +1,5 @@
+kubectl apply -f secret.yml
+
 kubectl apply -f dp-db.yaml
 
 sleep 5
@@ -33,3 +35,6 @@ wait
 
 
 #user: pablodevops pass: Test123456789*
+
+#to generate the dockerhub secret, run the following command and replace the username and access token with your own. Then copy the output and paste it in the secret.yml file in the .dockerconfigjson field. 
+#echo -n '{"auths":{"https://index.docker.io/v1/":{"username":"TU_USUARIO","password":"TU_ACCESS_TOKEN","auth":"'$(echo -n 'TU_USUARIO:TU_ACCESS_TOKEN' | base64 | tr -d '\n')'"}}}' | base64 | tr -d '\n'

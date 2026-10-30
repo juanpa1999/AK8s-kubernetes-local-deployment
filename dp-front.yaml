@@ -12,13 +12,14 @@ spec:
       labels:
         app: front
     spec:
+      imagePullSecrets:
+      - name: dockerhub-credentials
       containers:
       - name: front
         image: jpcc141999/front4
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
-
-        
 ---
 apiVersion: v1
 kind: Service
@@ -29,7 +30,7 @@ spec:
   selector:
     app: front
   ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-      nodePort: 32000  # Puedes especificar un puerto específico o dejar que Kubernetes asigne uno automáticamente.
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+    nodePort: 32000 # Puedes especificar un puerto específico o dejar que Kubernetes asigne uno automáticamente.
