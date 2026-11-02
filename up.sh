@@ -2,7 +2,7 @@ kubectl apply -f secret.yml
 
 kubectl apply -f pvc_postgres.yml
 
-kubectl apply -f dp-db.yaml
+kubectl apply -f st-db.yaml
 
 sleep 5
 
@@ -15,7 +15,7 @@ kubectl apply -f dp-front.yaml
 sleep 30
 
 # wait until Postgres accepts connections, otherwise alembic/seed fail on a cold start
-until kubectl exec deploy/db-deployment -- pg_isready -U postgres -d postgres > /dev/null 2>&1; do
+until kubectl exec statefulset/db-statefulset -- pg_isready -U postgres -d postgres > /dev/null 2>&1; do
   echo "waiting for db..."
   sleep 2
 done
@@ -23,7 +23,7 @@ done
 kubectl exec -it $(kubectl get pods -l app=back -o jsonpath="{.items[0].metadata.name}") -- alembic upgrade head
 
 # seed test data (user pablodevops, sensors, readings); needs the tables created by alembic above
-#kubectl exec -i deploy/db-deployment -- psql -U postgres -d postgres -v #ON_ERROR_STOP=1 < sql/seed_pablodevops.sql
+kubectl exec -i statefulset/db-statefulset -- psql -U postgres -d postgres -v ON_ERROR_STOP=1 < sql/seed_pablodevops.sql
 
 # port-forward back (8000) and front (3000) to localhost; Ctrl+C stops both
 kubectl port-forward svc/back-service 8000:8000 &
