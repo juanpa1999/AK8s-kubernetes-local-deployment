@@ -17,6 +17,13 @@ spec:
         image: jpcc141999/db1
         ports:
         - containerPort: 5432
+        volumeMounts:
+        - name: postgres-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-storage
+        persistentVolumeClaim:
+          claimName: my-local-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -26,6 +33,6 @@ spec:
   selector:
     app: db
   ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432

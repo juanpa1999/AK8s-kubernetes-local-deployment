@@ -1,5 +1,7 @@
 kubectl apply -f secret.yml
 
+kubectl apply -f pvc_postgres.yml
+
 kubectl apply -f dp-db.yaml
 
 sleep 5
@@ -21,7 +23,7 @@ done
 kubectl exec -it $(kubectl get pods -l app=back -o jsonpath="{.items[0].metadata.name}") -- alembic upgrade head
 
 # seed test data (user pablodevops, sensors, readings); needs the tables created by alembic above
-kubectl exec -i deploy/db-deployment -- psql -U postgres -d postgres -v ON_ERROR_STOP=1 < sql/seed_pablodevops.sql
+#kubectl exec -i deploy/db-deployment -- psql -U postgres -d postgres -v #ON_ERROR_STOP=1 < sql/seed_pablodevops.sql
 
 # port-forward back (8000) and front (3000) to localhost; Ctrl+C stops both
 kubectl port-forward svc/back-service 8000:8000 &
